@@ -76,13 +76,13 @@ void hash_table_v2_add_entry(struct hash_table_v2 *hash_table,
 {
 	uint32_t errorCheck = 0;
 	struct hash_table_entry *hash_table_entry = get_hash_table_entry(hash_table, key);
-	errorCheck= pthread_mutex_lock(&my_mutex);  // Lock the mutex
-	if(errorCheck!=0)
-	{
-		//perror("locking error");
-		exit(errorCheck);
+	// errorCheck= pthread_mutex_lock(&my_mutex);  // Lock the mutex
+	// if(errorCheck!=0)
+	// {
+	// 	//perror("locking error");
+	// 	exit(errorCheck);
 
-	}
+	// }
 
 	struct list_head *list_head = &hash_table_entry->list_head;
 	struct list_entry *list_entry = get_list_entry(hash_table, key, list_head);
@@ -90,6 +90,14 @@ void hash_table_v2_add_entry(struct hash_table_v2 *hash_table,
 	/* Update the value if it already exists */
 	if (list_entry != NULL) {
 		list_entry->value = value;
+
+		return;
+	}
+
+	list_entry = calloc(1, sizeof(struct list_entry));
+	list_entry->key = key;
+	list_entry->value = value;
+	
 	errorCheck= pthread_mutex_unlock(&my_mutex);
 		if(errorCheck!=0)
 	{
@@ -97,12 +105,6 @@ void hash_table_v2_add_entry(struct hash_table_v2 *hash_table,
 		exit(errorCheck);
 
 	}
-		return;
-	}
-
-	list_entry = calloc(1, sizeof(struct list_entry));
-	list_entry->key = key;
-	list_entry->value = value;
 	SLIST_INSERT_HEAD(list_head, list_entry, pointers);
 	errorCheck= pthread_mutex_unlock(&my_mutex);
 		if(errorCheck!=0)
