@@ -1,5 +1,5 @@
 #include "hash-table-base.h"
-
+#include <stdio.h> //for perror()
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -79,9 +79,8 @@ void hash_table_v1_add_entry(struct hash_table_v1 *hash_table,
 	errorCheck= pthread_mutex_lock(&my_mutex);
 	if(errorCheck!=0)
 	{
-		//perror("locking error");
+		perror("locking error");
 		exit(errorCheck);
-
 	}
 	
 
@@ -91,10 +90,10 @@ void hash_table_v1_add_entry(struct hash_table_v1 *hash_table,
 
 	/* Update the value if it already exists */
 	if (list_entry != NULL) {
-	errorCheck= pthread_mutex_unlock(&my_mutex); //now we can unlock it after we finished
+	errorCheck = pthread_mutex_unlock(&my_mutex); //now we can unlock it after we finished
 	if(errorCheck!=0)
 	{
-		//perror("unlocking error");
+		perror("unlocking error");
 		exit(errorCheck);
 
 	}
@@ -110,7 +109,7 @@ void hash_table_v1_add_entry(struct hash_table_v1 *hash_table,
 	errorCheck= pthread_mutex_unlock(&my_mutex); //now we can unlock it after we finished
 	if(errorCheck!=0)
 	{
-		//perror("unlocking error");
+		perror("unlocking error");
 		exit(errorCheck);
 
 	}
