@@ -97,7 +97,7 @@ void hash_table_v2_add_entry(struct hash_table_v2 *hash_table,
 	list_entry = calloc(1, sizeof(struct list_entry));
 	list_entry->key = key;
 	list_entry->value = value;
-	
+
 	errorCheck= pthread_mutex_unlock(&my_mutex);
 		if(errorCheck!=0)
 	{
@@ -113,7 +113,7 @@ void hash_table_v2_add_entry(struct hash_table_v2 *hash_table,
 		exit(errorCheck);
 
 	}
-		return;
+		//return;
 }
 
 
