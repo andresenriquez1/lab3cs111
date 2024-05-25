@@ -1,5 +1,5 @@
 #include "hash-table-base.h"
-
+#include <stdio.h> //perror 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
