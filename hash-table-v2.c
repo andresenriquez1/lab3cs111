@@ -7,6 +7,8 @@
 
 #include <pthread.h>
 
+static pthread_mutex_t my_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 struct list_entry {
 	const char *key;
 	uint32_t value;
@@ -30,6 +32,7 @@ struct hash_table_v2 *hash_table_v2_create()
 	for (size_t i = 0; i < HASH_TABLE_CAPACITY; ++i) {
 		struct hash_table_entry *entry = &hash_table->entries[i];
 		SLIST_INIT(&entry->list_head);
+		pthread_mutex_init(&my_mutex, NULL);
 	}
 	return hash_table;
 }
@@ -79,6 +82,7 @@ void hash_table_v2_add_entry(struct hash_table_v2 *hash_table,
 	/* Update the value if it already exists */
 	if (list_entry != NULL) {
 		list_entry->value = value;
+		pthread_mutex_unlock(&my_mutex);
 		return;
 	}
 
@@ -86,7 +90,9 @@ void hash_table_v2_add_entry(struct hash_table_v2 *hash_table,
 	list_entry->key = key;
 	list_entry->value = value;
 	SLIST_INSERT_HEAD(list_head, list_entry, pointers);
+	pthread_mutex_unlock(&my_mutex);
 }
+
 
 uint32_t hash_table_v2_get_value(struct hash_table_v2 *hash_table,
                                  const char *key)
@@ -109,6 +115,7 @@ void hash_table_v2_destroy(struct hash_table_v2 *hash_table)
 			SLIST_REMOVE_HEAD(list_head, pointers);
 			free(list_entry);
 		}
+		pthread_mutex_destroy(&my_mutex); 
 	}
 	free(hash_table);
 }
